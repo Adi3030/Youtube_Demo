@@ -1,0 +1,69 @@
+{
+  "videos": [
+    {
+        "id": 0,
+      "title": "How to use TableView Cell in Swift 5 iOS",
+      "thumbnail": "Screen_1",
+      "channelName": "Yogesh Patel",
+      "profilePic": "Profile_1",
+      "views": "11.2M",
+      "timeStamp": "1 year ago"
+    },
+    {
+        "id": 1,
+      "title": "Clouser in swift 5",
+      "thumbnail": "Screen_2",
+      "channelName": "iOS Academy",
+      "profilePic": "Profile_2",
+      "views": "85k",
+      "timeStamp": "yesterday"
+    },
+    {
+        "id": 2,
+      "title": "Swift Interview Questions",
+      "thumbnail": "Screen_3",
+      "channelName": "Last mins Study",
+      "profilePic": "Profile_3",
+      "views": "11.2M",
+      "timeStamp": "3 year ago"
+    },
+    {
+        "id": 3,
+      "title": "How to use Userdefaults in Swift 5",
+      "thumbnail": "Screen_4",
+      "channelName": "Code Dive",
+      "profilePic": "Profile_4",
+      "views": "7M",
+      "timeStamp": "1 months ago"
+    },
+    {
+        "id": 4,
+      "title": "How to fetch data from Json in swift 5",
+      "thumbnail": "Screen_5",
+      "channelName": "Yogesh Patel",
+      "profilePic": "Profile_5",
+      "views": "1.22M",
+      "timeStamp": "4 year ago"
+    },
+    {
+        "id": 0,
+      "title": "MVVM | Alamofire | JSON Decoder | Codable | Coding Keys | URLS",
+      "thumbnail": "Screen_3",
+      "channelName": "Code Dive",
+      "profilePic": "Profile_1",
+      "views": "6.2M",
+      "timeStamp": "1 year ago"
+    },
+    {
+        "id": 0,
+      "title": "iOS Application Life Cycle and State | App Delegate vs Scene Delegate | Swift 5 2022",
+      "thumbnail": "Screen_1",
+      "channelName": "Yogesh Patel",
+      "profilePic": "Profile_5",
+      "views": "1.2M",
+      "timeStamp": "1 year ago"
+    }
+  ]
+}
+
+

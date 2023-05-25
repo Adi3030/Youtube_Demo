@@ -11,7 +11,7 @@ class HomeVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
-
+    var responseData:VideosModel = VideosModel(videos: [])
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +21,22 @@ class HomeVC: UIViewController {
         tableView.dataSource = self
         collectionView.delegate = self
         collectionView.dataSource = self
+        let videoCellNib = UINib(nibName: "CommonsVideoCell", bundle: nil)
+        tableView.register(videoCellNib, forCellReuseIdentifier: "CommonsVideoCell")
 
+        NetworkManager.shared.getVideosData{ videosData, errorMessage in
+            if let errorMessage = errorMessage {
+                print(errorMessage)
+                return
+            }
 
-        // Do any additional setup after loading the view.
+            guard let videos = videosData else {
+                print("No data")
+                return
+            }
+
+            self.responseData = videos
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -45,7 +58,7 @@ extension HomeVC: UITableViewDataSource {
         if section == 0 {
             return 1
         } else {
-            return Constants.videoImgArr.count
+            return responseData.videos.count
         }
     }
 
@@ -54,23 +67,24 @@ extension HomeVC: UITableViewDataSource {
             let shortsCell = tableView.dequeueReusableCell(withIdentifier: "ShortsTableViewCell", for: indexPath) as! ShortsTableViewCell
             return shortsCell
         } else {
-            let videoCell = tableView.dequeueReusableCell(withIdentifier: "VideoTableViewCell", for: indexPath) as! VideoTableViewCell
-            videoCell.viewImgView.image = UIImage(named: Constants.videoImgArr[indexPath.row])
-            videoCell.profileImgView.image = UIImage(named: Constants.profileIconArr[indexPath.row])
-            videoCell.viewsLbl.text = Constants.viewArr[indexPath.row]
-            videoCell.timeStampLbl.text = Constants.timeStampArr[indexPath.row]
-            videoCell.topicLbl.text = Constants.titleArr[indexPath.row]
+            let videoCell = tableView.dequeueReusableCell(withIdentifier: "CommonsVideoCell", for: indexPath) as! CommonsVideoCell
+            videoCell.timeStampLbl.text = responseData.videos[indexPath.row].timeStamp
+            videoCell.topicLbl.text = responseData.videos[indexPath.row].title
+            videoCell.viewImgView.image = UIImage(named: responseData.videos[indexPath.row].thumbnail)
+            videoCell.profileImgView.image = UIImage(named: responseData.videos[indexPath.row].profilePic)
+            videoCell.viewsLbl.text = responseData.videos[indexPath.row].views
             return videoCell
         }
 
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "DetailsVC") as! DetailsVC
 
-        vc.topic = Constants.titleArr[indexPath.row]
-        vc.imgData = Constants.videoImgArr[indexPath.row]
-        vc.views = Constants.viewArr[indexPath.row]
+        vc.topic = responseData.videos[indexPath.row].title
+        vc.imgData = responseData.videos[indexPath.row].thumbnail
+        vc.views = responseData.videos[indexPath.row].views
         self.navigationController?.pushViewController(vc, animated: true)
     }
 

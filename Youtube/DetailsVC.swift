@@ -7,19 +7,6 @@
 
 import UIKit
 
-class DetailVCTableCell: UITableViewCell {
-
-
-    @IBOutlet weak var topicLbl: UILabel!
-    @IBOutlet weak var viewImgView: UIImageView!
-    @IBOutlet weak var timeStampLbl: UILabel!
-    @IBOutlet weak var profileImgView: UIImageView!
-    @IBOutlet weak var viewsLbl: UILabel!
-    @IBOutlet weak var languageLbl: UILabel!
-    override class func awakeFromNib() {
-
-    }
-}
 class DetailsVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -27,7 +14,8 @@ class DetailsVC: UIViewController {
     @IBOutlet weak var videoImg: UIImageView!
     @IBOutlet weak var viewsLbl: UILabel!
     @IBOutlet weak var lanLbl: UILabel!
-
+    @IBOutlet weak var likeBtn: UIButton!
+    var responseData:VideosModel = VideosModel(videos: [])
     var imgData = ""
     var topic = ""
     var lan = ""
@@ -42,23 +30,59 @@ class DetailsVC: UIViewController {
         topicLbl.text = topic
         lanLbl.text = "Swift"
         viewsLbl.text = views
-        // Do any additional setup after loading the view.
+
+        let videoCellNib = UINib(nibName: "CommonsVideoCell", bundle: nil)
+        tableView.register(videoCellNib, forCellReuseIdentifier: "CommonsVideoCell")
+        NetworkManager.shared.getVideosData { videosData, errorMessage in
+            if let errorMessage = errorMessage {
+                print(errorMessage)
+                return
+            }
+
+            guard let videos = videosData else {
+                print("No data")
+                return
+            }
+
+
+            self.responseData = videos
+        }
+
     }
+
+    @IBAction func shareBtn(_ sender: Any) {
+        let activityVC = UIActivityViewController(activityItems: ["www.google.com"], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        self.present(activityVC, animated: true, completion: nil)
+    }
+
+    @IBAction func likeUnlikeBtn(_ sender: UIButton) {
+        if sender.isSelected {
+            sender.isSelected = false
+            UserDefaults.standard.set(sender.isSelected, forKey: "isSaved")
+
+        } else {
+            sender.isSelected = true
+            UserDefaults.standard.set(sender.isSelected, forKey: "isSaved")
+
+        }
+    }
+
 
 }
 
 extension DetailsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Constants.videoImgArr.count
+        return responseData.videos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailVCTableCell", for: indexPath) as! DetailVCTableCell
-        cell.viewImgView.image = UIImage(named: Constants.videoImgArr[indexPath.row])
-        cell.profileImgView.image = UIImage(named: Constants.profileIconArr[indexPath.row])
-        cell.viewsLbl.text = Constants.viewArr[indexPath.row]
-        cell.timeStampLbl.text = Constants.timeStampArr[indexPath.row]
-        cell.topicLbl.text = Constants.titleArr[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CommonsVideoCell", for: indexPath) as! CommonsVideoCell
+        cell.timeStampLbl.text = responseData.videos[indexPath.row].timeStamp
+        cell.topicLbl.text = responseData.videos[indexPath.row].title
+        cell.viewImgView.image = UIImage(named: responseData.videos[indexPath.row].thumbnail)
+        cell.profileImgView.image = UIImage(named: responseData.videos[indexPath.row].profilePic)
+        cell.viewsLbl.text = responseData.videos[indexPath.row].views
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
